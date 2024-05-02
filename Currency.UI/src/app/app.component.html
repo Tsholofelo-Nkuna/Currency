@@ -1,0 +1,62 @@
+<div [formGroup]="addCurrencyFormGroup">
+  <div style="display:flex;column-gap: 0.25em;align-items:center;margin-top:1em;padding:1em;">
+    <div>
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Currency Name</mat-label>
+        <input type="text"
+               matInput
+               [formControl]="getFormControl(addCurrencyFormGroup, currencyControlName)"
+               [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+          <ng-container *ngFor="let op of filteredCurrencies">
+            <mat-option [value]="op.name">{{op.name}}</mat-option>
+          </ng-container>
+        </mat-autocomplete>
+        <mat-error *ngIf="getFormControl(addCurrencyFormGroup, currencyControlName).errors?.['invalidInput'] ?? false">{{getFormControl(addCurrencyFormGroup, currencyControlName).errors?.['invalidInput'] ?? ''}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div>
+      <button (click)="onAddClick(getFormControl(addCurrencyFormGroup, currencyControlName).value)" mat-flat-button color="primary" [disabled]="addCurrencyFormGroup.invalid"><mat-icon fontIcon="add"></mat-icon>Add</button>
+    </div>
+  </div>
+</div>
+<div style="padding:1em;">
+  <table style="width:500px;">
+    <tr>
+      <th>Id</th>
+      <th>Code</th>
+      <th>Name</th>
+      <th></th>
+    </tr>
+    <tr *ngIf="savedCurrencyList.length === 0"><td colspan="4" style="text-align:center;">No Data</td></tr>
+    <ng-container *ngFor="let currency of savedCurrencyList; let rowIndex = index;">
+      <tr>
+        <ng-container *ngTemplateOutlet="rowTemplate; context {$implicit: currency, rowIndex}">
+        </ng-container>
+        <td>
+          <mat-icon (click)="editIndex = rowIndex; onEditClick(currency)" style="cursor:pointer;" color="primary" fontIcon="edit"></mat-icon>
+          &nbsp;
+          <mat-icon style="cursor:pointer;" *ngIf="editIndex === rowIndex" fontIcon="save" color="primary" (click)="onSaveClick(currency)"></mat-icon>
+          &nbsp;
+          <mat-icon (click)="onDeleteClick(currency.id)" style="cursor:pointer;" color="primary" fontIcon="delete"></mat-icon>
+          &nbsp;
+          <mat-icon *ngIf="editIndex === rowIndex" (click)="editIndex = -1;" style="cursor:pointer;" color="primary" fontIcon="close"></mat-icon>
+
+        </td>
+      </tr>
+    </ng-container>
+  </table>
+</div>
+
+<ng-template #rowTemplate let-rowRecord let-rowIndex="rowIndex">
+  <ng-container *ngIf="editIndex !== rowIndex">
+    <td>{{rowRecord.id}}</td>
+    <td>{{rowRecord.code}}</td>
+    <td>{{rowRecord.name}}</td>
+  </ng-container>
+  <ng-container *ngIf="rowIndex === editIndex">
+    <td>{{rowRecord.id}}</td>
+    <td><input matInput [(ngModel)] ="editRecord.code" /></td>
+    <td><input matInput [(ngModel)]="editRecord.name" /></td>
+  </ng-container>
+</ng-template>
