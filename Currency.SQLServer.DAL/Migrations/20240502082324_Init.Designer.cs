@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Currency.SQLServer.DAL.Migrations
 {
     [DbContext(typeof(WebDbContext))]
-    [Migration("20240501122428_Init")]
+    [Migration("20240502082324_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
